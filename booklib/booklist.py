@@ -4,6 +4,10 @@
 		Можно менять порядок книг
 """
 
+from booklib.book import Book
+import codecs
+
+
 class BookList(object):
 	""" Класс для хранения упорядочиваемого списка книг """
 	def __init__(self):
@@ -52,4 +56,30 @@ class BookList(object):
 		print(self.title)
 		for i, bookname in enumerate(self.order):
 			print('Книга #%d:'%i)
-			self.books[bookname].ViewDetails()
+			self.books[bookname].view_details()
+
+	def save_books(self, fname):
+		i = 0
+
+		# if self.books.count != 0:
+		if i is 0:
+			with open(fname, "w") as f:
+				for bookname in self.books:
+					book = self.GetBook(bookname)
+					f.write(book.serialize())
+					f.write("\n")
+					i = i + 1
+		print("Сохранено объектов: ", i)
+
+	def load_books(self, fname):
+		i = 0
+		with codecs.open(fname, 'rU', 'utf-8') as f:
+			for line in f:
+				# ci_db.append(json.loads(line))
+				book = Book()
+				book.deserialize(line)
+				# ci.show()
+				self.AddBook(book)
+				i = i + 1
+		print("Загружено объектов: ", i)
+
