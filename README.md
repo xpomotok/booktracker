@@ -1,2 +1,2 @@
 # booktracker
-Keeps track of books
+The main idea for that project is to keep track reading progress of my books.

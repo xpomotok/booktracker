@@ -1,11 +1,12 @@
 # coding: utf-8
-""" Модуль для работы со списками книг 
+""" Модуль для работы со списками книг
 
 		Можно менять порядок книг
 """
 
 from booklib.book import Book
 import codecs
+import json
 
 
 class BookList(object):
@@ -36,7 +37,7 @@ class BookList(object):
 				del self.books[bookname]
 				del self.order[index]
 				self.count -= 1
-				#self.MoveUp(self.order[index])
+				# self.MoveUp(self.order[index])
 				
 	def MoveUp(self, bookname):
 		index = self.order.index(bookname)
@@ -55,28 +56,38 @@ class BookList(object):
 	def ViewBooks(self):
 		print(self.title)
 		for i, bookname in enumerate(self.order):
-			print('Книга #%d:'%i)
+			print('Книга #%d:' % i)
 			self.books[bookname].view_details()
 
-	def save_books(self, fname):
-		i = 0
+	def toJSON(self):
+		# return json.dumps(self.__dict__, sort_keys=True, indent=4)
+		# return json.dumps(self.__dict__, sort_keys=True)
+		return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
-		# if self.books.count != 0:
-		if i is 0:
+	def fromJSON(self, dbstr):
+		try:
+			self.__dict__ = json.loads(dbstr)
+		except JSONDecodeError as E:
+			print("%s on %d".formate(E.msg, line))
+		
+	def save_books(self, fname):
+		# i = 0
+
+		if self.count != 0:
 			with open(fname, "w") as f:
-				for bookname in self.books:
+				for i, bookname in enumerate(self.order):
 					book = self.GetBook(bookname)
 					f.write(book.serialize())
 					f.write("\n")
-					i = i + 1
-		print("Сохранено объектов: ", i)
+					# i = i + 1
+			print("Сохранено объектов: ", i+1)
 
 	def load_books(self, fname):
 		i = 0
 		with codecs.open(fname, 'rU', 'utf-8') as f:
 			for line in f:
 				# ci_db.append(json.loads(line))
-				book = Book()
+				book = Book('', '')
 				book.deserialize(line)
 				# ci.show()
 				self.AddBook(book)
