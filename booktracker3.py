@@ -1,123 +1,67 @@
 # coding: utf-8
-import console
+# import console
 
 from booklib.book import Book
 from booklib.booklist import BookList
-
-# from book import Book
-# for Pythonista this method is working with
-# __init__.py present in the same dir
+Library: BookList
+Fname = "library.json"
 
 
-def test_case1():
-	b1 = Book('Herding cats', 'Hank Reinwater')
-	print(b1.__doc__)
-	
-	unread = BookList()
-	unread.title = 'Непрочитанное'
-	print(unread.__doc__)
-	
-	
-def test_case2():
-	b1 = Book('Herding cats', 'Hank Reinwater')
-	b1.pages = 312
-	b2 = Book('Deadline', 'Tom DeMarco')
-	b3 = Book('Refactoring', 'Martin Fowler')
-
-	unread = BookList()
-	unread.title = 'Непрочитанное'
-
-	unread.AddBook(b1)
-	unread.AddBook(b2)
-	unread.AddBook(b3)
-	unread.ViewBooks()
-
-	print('\n')
-
-	reading = BookList()
-	reading.title = 'Читаемое'
-	reading.AddBook(unread.GetBook('Deadline'))
-	reading.ViewBooks()
+def init_app():
+	Library = BookList()
+	try:
+		Library.load_books(Fname)
+	except OSError as E:
+		print("You are running app for the first time! Library is empty")
 
 
-def test_case2():
-	b1 = Book('Herding cats', 'Hank Reinwater')
-	b1.pages = 312
-	b2 = Book('Deadline', 'Tom DeMarco')
-	b3 = Book('Refactoring', 'Martin Fowler')
-
-	unread = BookList()
-	unread.title = 'Непрочитанное'
-
-	unread.AddBook(b1)
-	unread.AddBook(b2)
-	unread.AddBook(b3)
-	unread.ViewBooks()
-
-	print('\n')
-
-	reading = BookList()
-	reading.title = 'Читаемое'
-	reading.AddBook(unread.GetBook('Deadline'))
-	reading.ViewBooks()
+def print_main_menu():
+	print("1. Show library")
+	print("2. Add new book")
+	print("3. Save library")
+	print("4. Exit")
 
 
-def test_case3():
-	b1 = Book('Herding cats', 'Hank Reinwater')
-	b1.pages = 312
-	b2 = Book('Deadline', 'Tom DeMarco')
-	b3 = Book('Refactoring', 'Martin Fowler')
+def print_new_book():
+	print("Enter book details: ")
+	author = input("Author: ")
+	title = input("Title: ")
+	pages = input("Pages: ")
 
-	unread = BookList()
-	unread.title = 'Непрочитанное'
+	new_book = Book(author=author, name=title)
 
-	unread.AddBook(b1)
-	unread.AddBook(b2)
-	unread.AddBook(b3)
-	unread.ViewBooks()
-
-	unread.save_books("unread_books.txt")
+	if pages.isdigit():
+		new_book.set_pages(int(pages))
+		Library.AddBook(new_book)
+	return
 
 
-def test_case4():
-	blist = BookList()
-	blist.title = 'From unread'
-	blist.load_books("unread_books.txt")
-	blist.ViewBooks()
-	blist.MoveUp('Deadline')
-	blist.MoveUp('Refactoring')
-	blist.ViewBooks()
-	blist.save_books("blist_books.txt")
+def handle_main_menu():
+	while True:
+		print_main_menu()
+
+		sp = input(">")
+		if sp.isdigit():
+			p = int(sp)
+			if p is 1:
+				Library.ViewBooks()
+			elif p is 2:
+				handle_new_book()
+			elif p is 3:
+				Library.save_books()
+			elif p is 4:
+				return
 
 
-def test_case5():
-	blist = BookList()
-	blist.title = 'From blist'
-	blist.load_books("blist_books.txt")
-	blist.ViewBooks()
-	
-	print(blist.serialize())
-	# print(Book.__dict__)
+def handle_new_book():
+	print_new_book()
 
 
-# Проверка сериализации списка книг с последующей
-# десериализацией
-# далее обращения к содержимому списка
-def test_case6():
-	blist = BookList()
-	blist.load_books("blist_books.txt")
-	jb = blist.serialize()
-	blist.deserialize(jb)
-	# print(blist.__dict__)
-	
-	print(blist.books['Refactoring'])
-	
+def main():
+	init_app()
+	handle_main_menu()
+
 
 if __name__ == "__main__":
-	console.clear()
-	# test_case1()
-	# test_case3()
-	# test_case4()
-	# test_case5()
-	test_case6()
-	
+	main()
+

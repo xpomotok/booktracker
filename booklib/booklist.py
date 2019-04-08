@@ -67,8 +67,8 @@ class BookList(object):
 	def fromJSON(self, dbstr):
 		try:
 			self.__dict__ = json.loads(dbstr)
-		except JSONDecodeError as E:
-			print("%s on %d".formate(E.msg, line))
+		except json.JSONDecodeError as E:
+			print("%s on %d".formate(E.msg, E.lineno))
 		
 	def save_books(self, fname):
 		# i = 0
