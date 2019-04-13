@@ -56,7 +56,7 @@ class BookList(object):
 	def ViewBooks(self):
 		print(self.title)
 		for i, bookname in enumerate(self.order):
-			print('Книга #%d:' % i)
+			print('Book #%d:' % i)
 			self.books[bookname].view_details()
 
 	def toJSON(self):
@@ -80,17 +80,20 @@ class BookList(object):
 					f.write(book.serialize())
 					f.write("\n")
 					# i = i + 1
-			print("Сохранено объектов: ", i+1)
+			print("Books saved: ", i+1)
 
 	def load_books(self, fname):
 		i = 0
-		with codecs.open(fname, 'rU', 'utf-8') as f:
-			for line in f:
-				# ci_db.append(json.loads(line))
-				book = Book('', '')
-				book.deserialize(line)
-				# ci.show()
-				self.AddBook(book)
-				i = i + 1
-		print("Загружено объектов: ", i)
+		try:
+			with codecs.open(fname, 'rU', 'utf-8') as f:
+				for line in f:
+					# ci_db.append(json.loads(line))
+					book = Book('', '')
+					book.deserialize(line)
+					# ci.show()
+					self.AddBook(book)
+					i = i + 1
+			print("Books loaded: ", i)
+		except OSError as E:
+			print("File not found!")
 
